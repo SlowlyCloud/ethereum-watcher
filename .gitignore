@@ -123,3 +123,4 @@ dist
 *.sw?
 
 .aws
+**/.DS_Store
