@@ -1,0 +1,110 @@
+# name: build & deploy to DEV environment
+
+# on:
+#     workflow_dispatch:
+#     pull_request:
+#         branches: ['main']
+
+# env:
+#     APP_ENV: development
+#     AWS_REGION: us-west-2
+#     ECR_REPOSITORY: dev-united-market-service
+#     ECS_SERVICE: ums
+#     ECS_CLUSTER: flipgod-dev
+#     ECS_TASK_DEFINITION: .aws/ecs/dev/task-definition.json
+#     CONTAINER_NAME: app
+
+# jobs:
+#     deploy:
+#         runs-on: ubuntu-latest
+#         # environment: dev
+
+#         steps:
+#             - uses: actions/checkout@v3
+
+#             - name: Make envfile
+#               uses: SpicyPizza/create-envfile@v1.3
+#               with:
+#                   directory: .env/
+#                   file_name: .env.dev
+#                   fail_on_empty: false
+
+#                   envkey_APP_ID: ums
+#                   envkey_BASE_PATH: ${{secrets.SERVER_BASEPATH}}
+#                   envkey_LOG_LEVEL: ${{secrets.SERVER_LOGLEVEL_DEV}}
+#                   envkey_MONGO_URI: ${{secrets.MONGO_URI_DEV}}
+#                   envkey_AUTH_SECRET: ${{secrets.AUTH_SECRET_DEV}}
+#                   envkey_SERVICE_TOKEN: ${{secrets.SERVICE_TOKEN_DEV}}
+#                   envkey_NFT_METADATA_URL: ${{secrets.USER_NFT_LIST_URL}}
+#                   envkey_MA_URL: ${{secrets.MA_URL_DEV}}
+#                   envkey_CCS_URL: ${{vars.CCS_URL_DEV}}
+#                   envkey_EMS_URL: ${{vars.EMS_URL_DEV}}
+#                   envkey_USERS_URL: ${{vars.USERS_URL_DEV}}
+#                   envkey_ADMIN_USERNAME: ${{secrets.ADMIN_USERNAME}}
+#                   envkey_ADMIN_PASSWORD: ${{secrets.ADMIN_PASSWORD}}
+
+#                   envkey_ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+#                   envkey_ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+#                   envkey_INFURA_API_KEY: ${{secrets.INFURA_API_KEY_DEV}}
+#                   envkey_RPC_FLASHBOTS: ${{vars.RPC_FLASHBOTS_DEV}}
+#                   envkey_OPENSEA_APIKEY: ${{secrets.OPENSEA_APIKEY_DEV}}
+
+#                   envkey_HONEYCOMB_API_KEY: ${{secrets.HONEYCOMB_API_KEY_DEV}}
+
+#                   # server_auth_algs: ${{secrets.SERVER_AUTH_ALGS}}
+#                   # server_auth_pk: ${{secrets.SERVER_AUTH_PK}}
+#                   # server_auth_aud: ${{secrets.SERVER_AUTH_AUD}}
+#                   # server_auth_iss: ${{secrets.SERVER_AUTH_ISS}}
+#                   # database_mongo_name: ${{secrets.MONGO_DB_NAME_DEV}}
+#                   # database_mongo_uri: ${{secrets.MONGO_URI_DEV}}
+#                   # server_cors_origin: ${{secrets.CORS_ORIGIN_DEV}}
+#                   # server_cors_credentials: ${{secrets.CORS_CRED}}
+#                   # server_cors_methods: ${{secrets.CORS_METHODS}}
+#                   # server_cors_headers: ${{secrets.CORS_HEADERS}}
+
+#             - name: Configure AWS credentials
+#               uses: aws-actions/configure-aws-credentials@v1.7.0
+#               with:
+#                   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+#                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+#                   aws-region: ${{ env.AWS_REGION }}
+
+#             - name: Login to Amazon ECR
+#               id: login-ecr
+#               uses: aws-actions/amazon-ecr-login@v1.5.3
+
+#             - name: Build, tag, and push image to Amazon ECR
+#               id: build-image
+#               env:
+#                   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#                   IMAGE_TAG: ${{ github.sha }}
+#                   NODE_ENV: ${{env.APP_ENV}}
+#               run: |
+#                   # Build a docker container and
+#                   # push it to ECR so that it can
+#                   # be deployed to ECS.
+#                   docker build --build-arg NODE_ENV=$NODE_ENV -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+#                   docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#                   echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+#             # - name: Generate token for checkout
+#             #   id: generate_token
+#             #   uses: tibdex/github-app-token@v1
+#             #   with:
+#             #     app_id: ${{ secrets.APP_ID_FOR_WORKFLOW }}
+#             #     private_key: ${{ secrets.APP_PRIVATE_KEY_FOR_WORKFLOW }}
+
+#             - name: Fill in the new image ID in the Amazon ECS task definition
+#               id: task-def
+#               uses: aws-actions/amazon-ecs-render-task-definition@v1.1.1
+#               with:
+#                   task-definition: ${{ env.ECS_TASK_DEFINITION }}
+#                   container-name: ${{ env.CONTAINER_NAME }}
+#                   image: ${{ steps.build-image.outputs.image }}
+
+#             - name: Deploy Amazon ECS task definition
+#               uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.10
+#               with:
+#                   task-definition: ${{ steps.task-def.outputs.task-definition }}
+#                   service: ${{ env.ECS_SERVICE }}
+#                   cluster: ${{ env.ECS_CLUSTER }}
+#                   wait-for-service-stability: true
