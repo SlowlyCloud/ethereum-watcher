@@ -1,4 +1,3 @@
-import { AutoMap } from '@automapper/classes';
 import { Type } from 'class-transformer';
 import {
     IsBoolean,
@@ -7,12 +6,8 @@ import {
     IsString,
 } from 'class-validator';
 import { IsInt } from 'class-validator';
-import {
-    Target as TargetOfDomain,
-    GasReport as GasReportOfDomain,
-} from '../domain/ethereumWatcher.valueobject';
 
-export class Target {
+class Target {
     @IsEthereumAddress()
     address: string; // ethereum address
 
@@ -38,15 +33,20 @@ export class GasReportRequestBody {
 }
 
 export class GasReportDto {
-    @AutoMap()
-    public id: string;
+    id: string;
 
-    @AutoMap(() => TargetOfDomain)
-    public target: TargetOfDomain;
+    target: Target;
 
-    @AutoMap(() => GasReportOfDomain)
-    public gasReport: GasReportOfDomain;
+    gasReport: ReportData;
 
-    @AutoMap()
-    public pushNotification: boolean;
+    pushNotification: boolean;
+}
+
+export class ReportData {
+    timestamp: number;
+    gasLimit: string;
+    gasPrice: string;
+    maxPriorityFeePerGas: string;
+    maxFeePerGas: string;
+    baseFee: string;
 }

@@ -8,8 +8,8 @@ export class EthereumWatcherWebsocketGateway {
         private readonly logger: Logger,
     ) {}
 
-    todo(): void {
+    pendingTransaction(): void {
         this.logger.debug(`EthereumWatcherWebsocketGateway::todo`);
-        this.ws.server.emit('EW:TODO', {});
+        this.ws.server.emit('EW:HIGHEST_GAS', {});
     }
 }
