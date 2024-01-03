@@ -5,6 +5,7 @@ import {
     IsPositive,
     IsString,
     IsInt,
+    ValidateIf,
 } from 'class-validator';
 
 class Target {
@@ -28,6 +29,7 @@ export class Args {
     @IsBoolean()
     pushNotification: boolean; // specify whether push notification is needed
 
+    @ValidateIf((o) => o.pushNotification === true)
     @IsInt()
     @IsPositive()
     timeout: number; // in seconds, this field is mandatory when pushNotification is set to true
