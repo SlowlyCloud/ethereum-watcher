@@ -6,12 +6,14 @@ import type { IQueryHandler } from '@nestjs/cqrs';
 
 @QueryHandler(TransactionsQuery)
 export class TransactionsHandler implements IQueryHandler<TransactionsQuery> {
-    private readonly alchemy = new Alchemy({
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: Network.ETH_MAINNET,
-    });
+    private readonly alchemy: Alchemy;
 
-    constructor(private readonly logger: Logger) {}
+    constructor(private readonly logger: Logger) {
+        this.alchemy = new Alchemy({
+            apiKey: process.env.ALCHEMY_API_KEY,
+            network: Network.ETH_MAINNET,
+        });
+    }
 
     // eslint-disable-next-line @typescript-eslint/require-await
     async execute(query: TransactionsQuery) {
