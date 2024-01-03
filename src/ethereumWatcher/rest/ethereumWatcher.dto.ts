@@ -4,15 +4,24 @@ import {
     IsEthereumAddress,
     IsPositive,
     IsString,
+    IsInt,
 } from 'class-validator';
-import { IsInt } from 'class-validator';
 
 class Target {
+    @IsString()
+    type: string; //  type of the target
+
     @IsEthereumAddress()
     address: string; // ethereum address
 
     @IsString()
     tokenId: string; // tokenId for the specific ethereum address (aka collection/contract address)
+
+    @IsString({ each: true })
+    markets: string[]; // reports from which markets should be included
+
+    @IsString()
+    network: string; // ethereum network
 }
 
 export class Args {
