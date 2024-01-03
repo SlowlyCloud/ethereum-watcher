@@ -35,6 +35,8 @@ interface PendingTransaction {
 @Injectable()
 export class EthereumWatcherService {
     private readonly alchemy: Alchemy;
+    private pendingTransactions: PendingTransaction[] = [];
+    private data: GasReportRequestBody | null = null;
 
     constructor(
         readonly logger: Logger,
@@ -48,7 +50,8 @@ export class EthereumWatcherService {
     }
 
     public async getHighestGasReport(data: GasReportRequestBody) {
-        const pendingTransactions = await this.collectPendingTransactions(data);
+        this.data = data;
+        const pendingTransactions = await this.collectPendingTransactions();
         if (pendingTransactions.length) {
             const highestGasTransaction = pendingTransactions.reduce(
                 (prev, curr) => {
@@ -78,32 +81,21 @@ export class EthereumWatcherService {
         return null;
     }
 
-    private collectPendingTransactions(data: GasReportRequestBody) {
-        const pendingTransactions: PendingTransaction[] = [];
+    private collectPendingTransactions() {
         const event = {
             method: AlchemySubscription.PENDING_TRANSACTIONS,
             toAddress: SEA_PORT_ADDRESS,
         };
 
-        const pendingTransactionsListener = (
-            pendingTransaction: PendingTransaction,
-        ) => {
-            this.logger.log(
-                `PENDING_TRANSACTIONS: `,
-                JSON.stringify(pendingTransaction),
-            );
-            if (this.isDesiredPendingTransaction(pendingTransaction, data)) {
-                pendingTransactions.push(pendingTransaction);
-            }
-        };
-
         return new Promise<PendingTransaction[]>((resolve) => {
-            this.alchemy.ws.on(event, pendingTransactionsListener);
+            this.alchemy.ws.on(event, this.pendingTransactionsListener);
 
             setTimeout(() => {
-                resolve(pendingTransactions);
-                this.alchemy.ws.off(event, pendingTransactionsListener);
-            }, data.args.timeout * 1000);
+                resolve(this.pendingTransactions);
+                this.pendingTransactions = [];
+                this.data = null;
+                this.alchemy.ws.off(event, this.pendingTransactionsListener);
+            }, this.data.args.timeout * 1000);
         });
     }
 
@@ -113,9 +105,19 @@ export class EthereumWatcherService {
     private isDesiredPendingTransaction(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         pendingTransaction: PendingTransaction,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        data: GasReportRequestBody,
     ) {
         return true;
+    }
+
+    private pendingTransactionsListener(
+        pendingTransaction: PendingTransaction,
+    ) {
+        this.logger.log(
+            `PENDING_TRANSACTIONS: `,
+            JSON.stringify(pendingTransaction),
+        );
+        if (this.isDesiredPendingTransaction(pendingTransaction)) {
+            this.pendingTransactions.push(pendingTransaction);
+        }
     }
 }
