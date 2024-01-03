@@ -7,7 +7,7 @@ import { Response } from 'src/share/rest/dto/response.dto';
 import { EthereumWatcherService } from '../ethereumWatcher.service';
 import { GasReportRequestBody } from './ethereumWatcher.dto';
 
-@Controller('v1')
+@Controller('v1/gas-report')
 export class EthereumWatcherController {
     constructor(
         private readonly logger: Logger,
@@ -17,7 +17,7 @@ export class EthereumWatcherController {
         @InjectMapper() private readonly mapper: Mapper,
     ) {}
 
-    @Post('gas-report')
+    @Post()
     @OtelMethodCounter()
     async report(@Body() data: GasReportRequestBody) {
         const highestGasReport =
@@ -26,7 +26,7 @@ export class EthereumWatcherController {
         return Response.new(200, 'successful', highestGasReport);
     }
 
-    @Delete('gas-report/:id')
+    @Delete(':id')
     @OtelMethodCounter()
     delete(@Param('id') id: string) {
         this.logger.log(`delete gas report with id: ${id}`);
