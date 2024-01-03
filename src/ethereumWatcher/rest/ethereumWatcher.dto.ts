@@ -19,7 +19,6 @@ export class Args {
     @IsBoolean()
     pushNotification: boolean; // specify whether push notification is needed
 
-    @Type(() => Number)
     @IsInt()
     @IsPositive()
     timeout: number; // in seconds, this field is mandatory when pushNotification is set to true
