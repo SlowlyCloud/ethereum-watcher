@@ -42,12 +42,31 @@ export class GasReportRequestBody {
 
 export class GasReportDto {
     id: string;
-
     target: Target;
-
     gasReport: ReportData;
-
     pushNotification: boolean;
+
+    constructor() {}
+
+    setId(id: string) {
+        this.id = id;
+        return this;
+    }
+
+    setTarget(target: Target) {
+        this.target = target;
+        return this;
+    }
+
+    setGasReport(gasReport: ReportData) {
+        this.gasReport = gasReport;
+        return this;
+    }
+
+    setPushNotification(pushNotification: boolean) {
+        this.pushNotification = pushNotification;
+        return this;
+    }
 }
 
 export class ReportData {
@@ -57,4 +76,36 @@ export class ReportData {
     maxPriorityFeePerGas: string;
     maxFeePerGas: string;
     baseFee: string;
+
+    constructor() {}
+
+    setTimestamp(timestamp: number) {
+        this.timestamp = timestamp;
+        return this;
+    }
+
+    setGasLimit(gasLimit: string) {
+        this.gasLimit = gasLimit;
+        return this;
+    }
+
+    setGasPrice(gasPrice: string) {
+        this.gasPrice = gasPrice;
+        return this;
+    }
+
+    setMaxPriorityFeePerGas(maxPriorityFeePerGas: string) {
+        this.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        return this;
+    }
+
+    setMaxFeePerGas(maxFeePerGas: string) {
+        this.maxFeePerGas = maxFeePerGas;
+        return this;
+    }
+
+    setBaseFee(baseFee: string) {
+        this.baseFee = baseFee;
+        return this;
+    }
 }

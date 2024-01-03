@@ -61,21 +61,25 @@ export class EthereumWatcherService {
                 },
             );
 
-            const gasReport = new GasReportDto();
-            gasReport.id = highestGasTransaction.hash;
-            gasReport.target = data.target;
-            const reportData = new ReportData();
-            reportData.timestamp = Date.now();
-            reportData.gasPrice = highestGasTransaction.gasPrice;
-            // TODO: get gasLimit from pending transaction
-            reportData.gasLimit = '';
-            reportData.maxPriorityFeePerGas =
-                highestGasTransaction.maxPriorityFeePerGas;
-            reportData.maxFeePerGas = highestGasTransaction.maxFeePerGas;
-            // TODO: get baseFee from pending transaction
-            reportData.baseFee = '';
-            gasReport.gasReport = reportData;
-            gasReport.pushNotification = data.args.pushNotification;
+            const reportData = new ReportData()
+                .setTimestamp(Date.now())
+                .setGasPrice(highestGasTransaction.gasPrice)
+                // TODO: get gasLimit from pending transaction
+                .setGasLimit('')
+                .setMaxPriorityFeePerGas(
+                    highestGasTransaction.maxPriorityFeePerGas,
+                )
+                .setMaxFeePerGas(highestGasTransaction.maxFeePerGas)
+                // TODO: get baseFee from pending transaction
+                .setBaseFee('');
+
+            const gasReport = new GasReportDto()
+                .setId(highestGasTransaction.hash)
+                .setTarget(data.target)
+                .setGasReport(reportData)
+                .setPushNotification(data.args.pushNotification);
+
+
             return gasReport;
         }
         return null;
