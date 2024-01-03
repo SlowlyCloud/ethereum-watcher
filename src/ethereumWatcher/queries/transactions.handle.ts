@@ -21,10 +21,7 @@ export class TransactionsHandler implements IQueryHandler<TransactionsQuery> {
             'TransactionsHandler::execute:' + JSON.stringify(query),
         );
 
-        this.logger.verbose(
-            'InquiryApeHandle::execute:document:' + JSON.stringify(document),
-        );
 
-        return document;
+        return null;
     }
 }
