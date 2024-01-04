@@ -9,7 +9,7 @@ export class EthereumWatcherWebsocketGateway {
     ) {}
 
     pendingTransaction(): void {
-        this.logger.debug(`EthereumWatcherWebsocketGateway::todo`);
-        this.ws.server.emit('EW:HIGHEST_GAS', {});
+        this.logger.debug(`EthereumWatcherWebsocketGateway::GAS_REPORT`);
+        this.ws.server.emit('EW:GAS_REPORT', {});
     }
 }
