@@ -7,7 +7,7 @@ import {
     GasReportDto,
     ReportData,
     type GasReportRequestBody,
-} from './rest/ethereumWatcher.dto';
+} from './rest/gasReport.dto';
 
 const SEA_PORT_ADDRESS = '0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC';
 

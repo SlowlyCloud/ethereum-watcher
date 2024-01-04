@@ -5,10 +5,10 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { Response } from 'src/share/rest/dto/response.dto';
 import { EthereumWatcherService } from '../ethereumWatcher.service';
-import { GasReportRequestBody } from './ethereumWatcher.dto';
+import { GasReportRequestBody } from './gasReport.dto';
 
 @Controller('v1/gas-report')
-export class EthereumWatcherController {
+export class GasReportController {
     constructor(
         private readonly logger: Logger,
         private readonly commandLocater: CommandBus,
