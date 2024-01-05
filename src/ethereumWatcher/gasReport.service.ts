@@ -33,7 +33,7 @@ interface PendingTransaction {
 }
 
 @Injectable()
-export class EthereumWatcherService {
+export class GasReportService {
     private readonly alchemy: Alchemy;
     private pendingTransactions: PendingTransaction[] = [];
     private data: GasReportRequestBody | null = null;
@@ -78,7 +78,6 @@ export class EthereumWatcherService {
                 .setTarget(data.target)
                 .setGasReport(reportData)
                 .setPushNotification(data.args.pushNotification);
-
 
             return gasReport;
         }

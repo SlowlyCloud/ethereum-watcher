@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as joi from 'joi';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FacilitiesModule } from './facilities/facilities.module';
-import { EthereumWatcherModule } from './ethereumWatcher/ethereumWatcher.module';
+import { GasReportModule } from './ethereumWatcher/gasReport.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -32,7 +32,7 @@ import { AppService } from './app.service';
         }),
         ScheduleModule.forRoot(),
         FacilitiesModule,
-        EthereumWatcherModule,
+        GasReportModule,
     ],
     controllers: [AppController],
     providers: [AppService, Logger],

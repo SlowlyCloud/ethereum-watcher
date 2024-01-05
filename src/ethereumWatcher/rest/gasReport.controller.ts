@@ -4,7 +4,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { Response } from 'src/share/rest/dto/response.dto';
-import { EthereumWatcherService } from '../ethereumWatcher.service';
+import { GasReportService } from '../gasReport.service';
 import { GasReportRequestBody } from './gasReport.dto';
 
 @Controller('v1/gas-report')
@@ -13,7 +13,7 @@ export class GasReportController {
         private readonly logger: Logger,
         private readonly commandLocater: CommandBus,
         private readonly queryLocater: QueryBus,
-        private readonly ethereumWatcherService: EthereumWatcherService,
+        private readonly ethereumWatcherService: GasReportService,
         @InjectMapper() private readonly mapper: Mapper,
     ) {}
 
